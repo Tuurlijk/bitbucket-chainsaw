@@ -69,10 +69,6 @@ public class ChainsawServlet extends HttpServlet {
             return;
         }
 
-        log.warn(components[0]);
-        log.warn(components[1]);
-        log.warn(components[2]);
-
         Repository repository = repositoryService.getBySlug(components[1], components[2]);
 
         if (repository == null) {
@@ -82,7 +78,7 @@ public class ChainsawServlet extends HttpServlet {
 
         Map<String, Object> parameters = new HashedMap();
         parameters.put("repository", repository);
-        log.warn("form parametrs : " + parameters);
+//        log.warn("form parametrs : " + parameters);
         VelocityContext context = new VelocityContext(parameters);
         VelocityEngine engine = new VelocityEngine();
         engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
