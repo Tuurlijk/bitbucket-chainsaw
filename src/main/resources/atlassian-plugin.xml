@@ -10,10 +10,12 @@
   </plugin-info>
   <!-- add our i18n resource -->
   <resource type="i18n" name="i18n" location="chainsaw"/>
+
   <servlet name="Chainsaw Servlet" i18n-name-key="chainsaw-servlet.name" key="chainsaw-servlet" class="com.michielroos.bitbucket.servlet.ChainsawServlet">
     <description key="chainsaw-servlet.description">The Chainsaw Servlet Plugin</description>
     <url-pattern>/michielroos/chainsaw/repository/*</url-pattern>
   </servlet>
+
   <web-item name="Chainsaw" i18n-name-key="chainsaw.name" key="chainsaw" section="bitbucket.repository.nav" weight="1000">
     <description key="chainsaw.description">The Chainsaw Plugin</description>
     <label key="chainsaw.label"></label>

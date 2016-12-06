@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.michielroos.bitbucket</groupId>
 	<artifactId>chainsaw</artifactId>
-	<version>0.0.7</version>
+	<version>0.1.0</version>
 	<organization>
 		<name>ℳichiel ℛoos</name>
 		<url>https://www.michielroos.com/</url>
@@ -108,7 +108,18 @@
 		<dependency>
 			<groupId>com.atlassian.templaterenderer</groupId>
 			<artifactId>atlassian-template-renderer-api</artifactId>
-			<version>1.2.3</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.6.4-atlassian-7</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.soy</groupId>
+			<artifactId>soy-template-renderer-api</artifactId>
+			<version>4.3.0</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -137,6 +148,7 @@
 						<Export-Package>com.michielroos.bitbucket.api,</Export-Package>
 						<!-- Add package import here -->
 						<Import-Package>
+							com.atlassian.bitbucket.*,
 							org.springframework.osgi.*;resolution:="optional",
 							javax.servlet*;version="2.4",
 							*;resolution:=optional
@@ -166,7 +178,7 @@
 							<artifactId>atlassian-spring-scanner-external-jar</artifactId>
 						</dependency>
 					</scannedDependencies>
-					<verbose>true</verbose>
+					<verbose>false</verbose>
 				</configuration>
 			</plugin>
 		</plugins>

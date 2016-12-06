@@ -1,8 +1,8 @@
 <html>
 <head>
 	<meta name="decorator" content="bitbucket.repository.general"/>
-	<meta name="projectKey" content="{$repository.project.key}"/>
-	<meta name="repositorySlug" content="{$repository.slug}"/>
+	<meta name="projectKey" content="$repository.project.key"/>
+	<meta name="repositorySlug" content="$repository.slug"/>
 	<meta name="activeTab" content="repository-plugin-tab"/>
 	$webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
 	$webResourceManager.requireResource("com.michielroos.bitbucket.chainsaw:account.settings.resources")
