@@ -1,0 +1,32 @@
+<html>
+<head>
+	<meta name="decorator" content="bitbucket.repository.general"/>
+	<meta name="projectKey" content="{$repository.project.key}"/>
+	<meta name="repositorySlug" content="{$repository.slug}"/>
+	<meta name="activeTab" content="repository-plugin-tab"/>
+	$webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
+	$webResourceManager.requireResource("com.michielroos.bitbucket.chainsaw:account.settings.resources")
+	<title>$repository.slug / Example Tab</title>
+</head>
+<body>
+<h3>Repository: $repository.slug</h3>
+<header class="aui-page-header">
+	<div class="aui-page-header-inner">
+		<div class="aui-page-header-main"><h2>$i18n.getText('account.settings.servlet.header')</h2></div>
+	</div>
+</header>
+<div class="aui-group account-settings">
+	<div class="aui-item keyboard-shortcut-context">
+		<form class="aui prevent-double-submit " action="" method="post" accept-charset="UTF-8">
+			<h3>$i18n.getText('account.settings.servlet.context.pullRequest')</h3>
+			<fieldset class="group">
+				<legend><span>$i18n.getText('account.settings.servlet.disable')</span></legend>
+			</fieldset>
+			<div class="field-group">
+				<input type="submit" value="$i18n.getText('account.settings.servlet.save')" class="aui-button aui-button-primary"/>
+			</div>
+		</form>
+	</div>
+</div>
+</body>
+</html>
