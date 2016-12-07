@@ -3,10 +3,10 @@
 	<meta name="decorator" content="bitbucket.repository.general"/>
 	<meta name="projectKey" content="$repository.project.key"/>
 	<meta name="repositorySlug" content="$repository.slug"/>
-	<meta name="activeTab" content="repository-plugin-tab"/>
+	<meta name="activeTab" content="bitbucket.repository.nav.chainsaw"/>
 	$webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
 	$webResourceManager.requireResource("com.michielroos.bitbucket.chainsaw:account.settings.resources")
-	<title>$repository.slug / Example Tab</title>
+	<title>Chainsaw for $repository.project.key / $repository.slug</title>
 </head>
 <body>
 <h3>Repository: $repository.slug</h3>

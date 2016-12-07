@@ -17,7 +17,7 @@
 		<url-pattern>/michielroos/chainsaw/repository/*</url-pattern>
 	</servlet>
 
-	<web-item name="Chainsaw" i18n-name-key="chainsaw.name" key="chainsaw" section="bitbucket.repository.nav" weight="1000">
+	<web-item name="Chainsaw" i18n-name-key="chainsaw.name" key="bitbucket.repository.nav.chainsaw" section="bitbucket.repository.nav" weight="1000">
 		<description key="chainsaw.description">Repository navigation item</description>
 		<conditions type="AND">
 			<!--&lt;!&ndash; Pull requests are only visible if the backing SCM supports them &ndash;&gt;-->
