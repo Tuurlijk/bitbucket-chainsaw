@@ -12,19 +12,24 @@
 	<resource type="i18n" name="i18n" location="chainsaw"/>
 
 	<servlet name="Chainsaw Servlet" i18n-name-key="chainsaw-servlet.name" key="chainsaw-servlet" class="com.michielroos.bitbucket.servlet.ChainsawServlet">
-		<description key="chainsaw-servlet.description">The Chainsaw Servlet Plugin
-		</description>
+		<description key="chainsaw-servlet.description"/>
+		<conditions type="AND">
+			<condition class="com.atlassian.bitbucket.web.conditions.IsLoggedInCondition"/>
+		</conditions>
 		<url-pattern>/michielroos/chainsaw/repository/*</url-pattern>
 	</servlet>
+
+	<web-resource key="bitbucket.repository.nav.resources" name="Repository navigation resources">
+		<resource type="download" name="repository.css" location="/css/repository.css"/>
+		<resource type="download" name="chainsaw.svg" location="/images/chainsaw.svg">
+			<param name="content-type" value="image/svg+xml"/>
+		</resource>
+		<context>atl.general</context>
+	</web-resource>
 
 	<web-item name="Chainsaw" i18n-name-key="chainsaw.name" key="bitbucket.repository.nav.chainsaw" section="bitbucket.repository.nav" weight="1000">
 		<description key="chainsaw.description">Repository navigation item</description>
 		<conditions type="AND">
-			<!--&lt;!&ndash; Pull requests are only visible if the backing SCM supports them &ndash;&gt;-->
-			<!--<condition class="com.atlassian.bitbucket.web.conditions.IsScmFeatureSupportedCondition">-->
-				<!--<param name="feature">PULL_REQUESTS</param>-->
-			<!--</condition>-->
-			<!-- Pull requests are only visible to logged-in users -->
 			<condition class="com.atlassian.bitbucket.web.conditions.HasRepositoryPermissionCondition">
 				<param name="permission">REPO_READ</param>
 			</condition>
@@ -34,6 +39,6 @@
 		<link linkId="repository-nav-chainsaw">/plugins/servlet/michielroos/chainsaw/repository/${repository.project.key}/${repository.slug}</link>
 		<tooltip key="chainsaw.tooltip"/>
 		<!-- optional style for the icon: see https://design.atlassian.com/2.0/product/foundations/iconography for a list of available images -->
-		<param name="iconClass" value="aui-icon-small aui-iconfont-edit"/>
+		<param name="iconClass" value="chainsaw-icon"/>
 	</web-item>
 </atlassian-plugin>
