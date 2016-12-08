@@ -1,0 +1,209 @@
+{namespace bitbucket.internal.feature.repository}
+
+/*
+*   Non-public soy templates for the branch list table, although these are accessible client side they are not intended to be
+*   part of the public soy API
+*/
+
+/**
+ * @param repository
+ * @param baseRef
+ * @param webSections
+ * @param? page
+ * @param id
+ * @param? filterable
+ */
+{template .branchTableImpl private="true"}
+    {call bitbucket.internal.widget.pagedTable}
+        {param id: $id /}
+        {param filterable: $filterable /}
+        {param page: $page /}
+        {param extraClasses: 'branch-table' /}
+        {param theadContent}
+            <tr>
+             {call .branchTableHeaderCells}
+                {param webSections: $webSections /}
+             {/call}
+            </tr>
+        {/param}
+        {param content}
+            {if $page and $page.size}
+                {call .branchRowsImpl}
+                    {param branches: $page.values /}
+                    {param baseRef: $baseRef /}
+                    {param repository: $repository /}
+                    {param webSections: $webSections /}
+                {/call}
+            {/if}
+        {/param}
+    {/call}
+{/template}
+
+
+/**
+ * @param branches
+ * @param baseRef
+ * @param repository
+ * @param webSections
+ */
+{template .branchRowsImpl private="true"}
+    {foreach $branch in $branches}
+        {call .branchRow}
+            {param branch: $branch /}
+            {param baseRef: $baseRef /}
+            {param repository: $repository /}
+            {param webSections: $webSections /}
+        {/call}
+    {/foreach}
+{/template}
+
+/**
+ * @param branch
+ * @param repository
+ * @param baseRef
+ * @param webSections
+ **/
+{template .branchRow private="true"}
+    {let $isBaseBranch: $branch.id == $baseRef.id /}
+    {let $branchUrl: nav_compare_refs($repository.project, $repository, $branch.id, $baseRef.id) /}
+    <tr{if $isBaseBranch}{sp}class="base-branch"{/if} data-id="{$branch.id}">
+        <td headers="branch-name-column" class="branch-name-column">
+            // All of this is wrapped in an extra <div> because in IE if you position:relative a <td> it loses its
+            // borders.
+            <div>
+                // No accessibilityText needed for these icons because the table header
+                // already describes the content of this column -- 'Branch'
+                {call aui.icons.icon}
+                    {param size: 'small' /}
+                    {param useIconFont: true /}
+                    {param iconFontSet: 'devtools' /}
+                    {param icon: 'branch' /}
+                {/call}
+                <div class="line">
+                    {if $branch.isDefault}
+                        <div class="default-branch-lozenge aui-lozenge aui-lozenge-subtle aui-lozenge-complete" title="{getText('bitbucket.web.repository.branch.default.lozenge.tooltip')}">
+                            {getText('bitbucket.web.repository.branch.default.lozenge.text')}
+                        </div>
+                    {elseif $isBaseBranch}
+                        <div class="base-branch-lozenge aui-lozenge aui-lozenge-subtle aui-lozenge-complete" title="{getText('bitbucket.web.repository.branch.base.lozenge.tooltip')}">
+                            {getText('bitbucket.web.repository.branch.base.lozenge.text')}
+                        </div>
+                    {/if}
+                    <a href="{$branchUrl}" title="{$branch.displayId}">{$branch.displayId}</a>
+                </div>
+            </div>
+        </td>
+        {if $webSections}
+            {call bitbucket.internal.feature.repository.branchRowExtras}
+                {param webSections: $webSections /}
+                {param repository: $repository /}
+                {param branch: $branch /}
+                {param baseRef: $baseRef /}
+            {/call}
+        {/if}
+        <td headers="branch-actions-column" class="branch-actions-column">
+            {call .branchActions}
+                {param repository: $repository /}
+                {param branch: $branch /}
+                {param baseRef: $baseRef /}
+            {/call}
+        </td>
+    </tr>
+{/template}
+
+/**
+ * @param webSections
+ */
+{template .branchTableHeaderCells private="true"}
+    <th id="branch-name-column" scope="col">{getText('bitbucket.web.repository.branch.table.col.branch.name')}</th>
+    {if $webSections}
+        {foreach $webSection in $webSections}
+            <th id="{$webSection.key}" scope="col">{$webSection.labelText}</th>
+        {/foreach}
+    {/if}
+    <th id="branch-actions-column" scope="col">{getText('bitbucket.web.repository.branch.table.col.branch.actions')}</th>
+{/template}
+
+/**
+ * @param webSections
+ * @param repository
+ * @param branch
+ * @param baseRef
+ */
+{template .branchRowExtras private="true"}
+    {foreach $webSection in $webSections}
+        <td headers="{$webSection.key}" class="{$webSection.key}">
+            {foreach $webPanel in getWebPanels($webSection.key, [ 'repository' : $repository, 'branch' : $branch, 'baseRef': $baseRef ])}
+                {$webPanel}
+            {/foreach}
+        </td>
+    {/foreach}
+{/template}
+
+/**
+ * Renders a drop down menu with a unique trigger (button with '... \/') for each row (based on branch.id) and a
+ * unique menu for each row.
+ * The list of action is computed when the row is rendered as opposed to when the button is clicked.
+ * Branches with no actions will have no button.
+ *
+ * @param repository
+ * @param branch
+ * @param baseRef
+ */
+{template .branchActions private="true"}
+    // Hack: These ```let```s are deliberately not one line because AUI does:
+    // return (0, _jquery2.default)('[aria-controls="' + $layer.attr('id') + '"]');
+    // which can break elements with special characters in their ID.
+    {let $triggerId}
+        branch-list-actions-{$branch.id}
+    {/let}
+    {let $menuId}
+        branch-list-actions-menu-{$branch.id}
+    {/let}
+    {let $webItems: getWebItems('bitbucket.branch.list.actions.dropdown', [ 'repository' : $repository, 'branch': $branch, 'baseRef': $baseRef]) /}
+
+    {if $webItems and length($webItems) > 0}
+        {call aui.dropdown2.trigger}
+            {param id: $triggerId /}
+            {param tagName: 'button'/}
+            {param content}
+                {call aui.icons.icon}
+                    {param useIconFont: true /}
+                    {param icon: 'more' /}
+                    {param accessibilityText: getText('bitbucket.web.branch.actions.menu.label') /}
+                {/call}
+            {/param}
+            {param extraClasses: 'aui-button aui-button-subtle aui-button-compact branch-list-action-trigger aui-dropdown2-trigger-arrowless' /}
+            {param menu: [ 'id' : $menuId ] /}
+        {/call}
+        {call aui.dropdown2.contents}
+            {param id: $menuId /}
+            {param content}
+                {call .branchActionsList}
+                    {param webItems: $webItems /}
+                {/call}
+            {/param}
+
+            {param extraClasses: 'aui-style-default branch-list-action-dropdown' /}
+            // the dropdown content (and thus any links for branch actions within it) is outside the branch row <tr>,
+            // so the branch's information is added here as data attributes
+            {param extraAttributes: ['data-id': $branch.id, 'data-display-id': $branch.displayId, 'data-latest-commit': $branch.latestCommit] /}
+        {/call}
+    {/if}
+{/template}
+
+
+/**
+  * @param webItems
+ */
+{template .branchActionsList private="true"}
+    <ul>
+        {foreach $webItem in $webItems}
+            <li class="branch-list-action-item">
+                {call bitbucket.internal.widget.webItem data="$webItem"}
+                    {param url: $webItem.url ? $webItem.url : '#' /}
+                {/call}
+            </li>
+        {/foreach}
+    </ul>
+{/template}

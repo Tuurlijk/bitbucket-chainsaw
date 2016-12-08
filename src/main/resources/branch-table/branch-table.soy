@@ -1,0 +1,37 @@
+{namespace bitbucket.internal.feature.repository}
+
+/**
+ * Renders a paginated table containing the list of branches for a repository
+ *
+ * @param repository the repository to show branches for
+ * @param baseRef    the base ref required by the metadata provider(s)
+ * @param? page      the initial page of branches to render
+ * @param id         an element id for the table
+ */
+{template .branchTable}
+    {call bitbucket.internal.feature.repository.branchTableImpl}
+        {param id: $id /}
+        {param page: $page /}
+        {param repository: $repository /}
+        {param baseRef: $baseRef /}
+        {param webSections : getWebSections('bitbucket.branches.extras', [ 'repository' : $repository, 'baseRef': $baseRef ]) /}
+    {/call}
+{/template}
+
+
+
+/**
+ * Creates rows from a iterable list of branches, intended to be added an existing branch list table
+ *
+ * @param branches   the branches which we are creating rows for
+ * @param baseRef    the base ref required by the metadata provider(s)
+ * @param repository the repository we are showing branches for
+ */
+{template .branchRows}
+   {call bitbucket.internal.feature.repository.branchRowsImpl}
+           {param branches: $branches /}
+           {param repository: $repository /}
+           {param baseRef: $baseRef /}
+           {param webSections : getWebSections('bitbucket.branches.extras', [ 'repository' : $repository, 'baseRef': $baseRef ]) /}
+   {/call}
+{/template}

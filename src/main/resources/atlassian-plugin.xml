@@ -41,4 +41,11 @@
 		<!-- optional style for the icon: see https://design.atlassian.com/2.0/product/foundations/iconography for a list of available images -->
 		<param name="iconClass" value="chainsaw-icon"/>
 	</web-item>
+
+	<web-resource key="branch-table.webresources" name="Branch Table Resources">
+		<resource type="download" name="branch-table-ie9.css" location="/branch-table/branch-table-ie9.css"/>
+		<resource type="download" name="branch-table.css" location="/branch-table/branch-table.css"/>
+		<dependency>com.atlassian.bitbucket.server.bitbucket-web:branch-table</dependency>
+		<context>atl.general</context>
+	</web-resource>
 </atlassian-plugin>

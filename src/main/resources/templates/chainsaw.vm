@@ -4,31 +4,93 @@
 	<meta name="projectKey" content="$repository.project.key"/>
 	<meta name="repositorySlug" content="$repository.slug"/>
 	<meta name="activeTab" content="bitbucket.repository.nav.chainsaw"/>
-	$webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
-	$webResourceManager.requireResource("com.michielroos.bitbucket.chainsaw:account.settings.resources")
+##	$webResourceManager.requireResource("com.michielroos.bitbucket.chainsaw:branch-table.resources")
+##	$webResourceManager.requireResource("com.michielroos.bitbucket.chainsaw:branch-table.webresources")
+##	#requireResourcesForContext("com.michielroos.bitbucket.chainsaw.branch-table")
+##	#requireResourcesForContext("bitbucket.layout.branch")
+##	#requireResourcesForContext("bitbucket.page.repository.branches")
 	<title>Chainsaw for $repository.project.key / $repository.slug</title>
 </head>
 <body>
-<h3>Repository: $repository.slug</h3>
-<header class="aui-page-header">
+<header class="aui-page-header page-header-flex">
 	<div class="aui-page-header-inner">
-		<div class="aui-page-header-main"><h2>$i18n.getText('account.settings.servlet.header')</h2></div>
+		<div class="aui-page-header-main">
+			<ol class="aui-nav aui-nav-breadcrumbs repository-breadcrumbs" resolved="">
+				<li><a href="$navBuilder.project($repository.project.key).buildRelative()" title="$repository.project.key">$repository.project.key</a></li>
+				<li class="aui-nav-selected"><a href="$navBuilder.repo($repository).browse().buildRelative()" title="$repository.slug">$repository.slug</a></li>
+			</ol>
+			<h2 class="page-panel-content-header">Chainsaw</h2>
+		</div>
 	</div>
 </header>
-<p>$count branches in $repository.slug</p>
-<p>$branch.type $branch.id</p>
-<div class="aui-group account-settings">
-	<div class="aui-item keyboard-shortcut-context">
-		<form class="aui prevent-double-submit " action="" method="post" accept-charset="UTF-8">
-			<h3>$i18n.getText('account.settings.servlet.context.pullRequest')</h3>
-			<fieldset class="group">
-				<legend><span>$i18n.getText('account.settings.servlet.disable')</span></legend>
-			</fieldset>
-			<div class="field-group">
-				<input type="submit" value="$i18n.getText('account.settings.servlet.save')" class="aui-button aui-button-primary"/>
-			</div>
-		</form>
-	</div>
-</div>
+<condition class="com.atlassian.bitbucket.web.conditions.RepositoryNotEmptyCondition"/>
+
+<div class="notifications"></div>
+<table class="aui paged-table branch-table" id="branch-list">
+	<thead>
+	<tr>
+		<th id="branch-name-column" scope="col">Branch</th>
+		<th id="ahead-behind-column" scope="col">Behind/Ahead</th>
+		<th id="last-updated-column" scope="col">Updated</th>
+		<th id="pull-requests-column" scope="col">Pull requests</th>
+		<th id="build-status-branch-list-col" scope="col" style="display: none;">Builds</th>
+		<th id="branch-actions-column" scope="col">Actions</th>
+	</tr>
+	</thead>
+	<tbody>
+		#foreach ($branch in $branches)
+			#if ($branch.isDefault)
+			<tr class="base-branch focused" data-id="$branch.id">
+				<td headers="branch-name-column" class="branch-name-column">
+					<div><span class="aui-icon aui-icon-small aui-iconfont-devtools-branch"></span>
+						<div class="line">
+							<div class="default-branch-lozenge aui-lozenge aui-lozenge-subtle aui-lozenge-complete" title="Default branch of the repository">$branch.displayId</div>
+							<a href="$navBuilder.repo($repository).compare().sourceBranch($branch.id).targetBranch($defaultBranch.id).buildRelative()" title="$branch.displayId">$branch.displayId</a></div>
+					</div>
+				</td>
+				<td headers="ahead-behind-column" class="ahead-behind-column"></td>
+				<td headers="last-updated-column" class="last-updated-column">
+					$branch.latestCommit.
+					<time title="Last updated by Anna Buttfield on 03 February 2011 06:01 AM" datetime="2011-02-03T06:01:07+0100">03 Feb 2011</time>
+				</td>
+				<td headers="pull-requests-column" class="pull-requests-column"></td>
+				<td headers="branch-actions-column" class="branch-actions-column">
+					<input type="checkbox" value="$branch.id"/>
+				</td>
+			</tr>
+			#else
+			<tr data-id="$branch.id">
+				<td headers="branch-name-column" class="branch-name-column">
+					<div><span class="aui-icon aui-icon-small aui-iconfont-devtools-branch"></span>
+						<div class="line">
+							<a href="$navBuilder.repo($repository).compare().sourceBranch($branch.id).targetBranch($defaultBranch.id).buildRelative()" title="$branch.displayId">$branch.displayId</a>
+						</div>
+					</div>
+				</td>
+				<td headers="ahead-behind-column" class="ahead-behind-column">
+					<div class="ahead-behind-graph" title="4 commits behind master">
+						<div class="assistive">4 commits behind master</div>
+						<div class="count-graph behind-graph">
+							<div class="count-bar" style="width: 16.0944%;">&nbsp;</div>
+							<div class="count">4</div>
+						</div>
+						<div class="count-graph ahead-graph empty-count">
+							<div class="count-bar" style="width: 0%;">&nbsp;</div>
+							<div class="count">0</div>
+						</div>
+					</div>
+				</td>
+				<td headers="last-updated-column" class="last-updated-column">
+					<time title="Last updated by Michael Heemskerk on 20 December 2010 04:41 AM" datetime="2010-12-20T04:41:15+0100">20 Dec 2010</time>
+				</td>
+				<td headers="pull-requests-column" class="pull-requests-column"></td>
+				<td headers="branch-actions-column" class="branch-actions-column">
+					<input type="checkbox" value="$branch.id"/>
+				</td>
+			</tr>
+			#end
+		#end
+	</tbody>
+</table>
 </body>
 </html>
