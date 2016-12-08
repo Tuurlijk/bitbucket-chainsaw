@@ -14,6 +14,7 @@ package com.michielroos.bitbucket.servlet;
  */
 
 import com.atlassian.bitbucket.auth.AuthenticationContext;
+import com.atlassian.bitbucket.nav.NavBuilder;
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.permission.PermissionService;
 import com.atlassian.bitbucket.repository.*;
@@ -49,6 +50,8 @@ public class ChainsawServlet extends HttpServlet {
     @ComponentImport
     private final AuthenticationContext authenticationContext;
     @ComponentImport
+    private final NavBuilder navBuilder;
+    @ComponentImport
     private final RefService refService;
     @ComponentImport
     private final RepositoryService repositoryService;
@@ -59,11 +62,13 @@ public class ChainsawServlet extends HttpServlet {
     @Inject
     public ChainsawServlet(
             @NotNull AuthenticationContext authenticationContext,
+            @NotNull NavBuilder navBuilder,
             @NotNull RefService refService,
             @NotNull RepositoryService repositoryService,
             @NotNull PermissionService permissionService
     ) {
         this.authenticationContext = authenticationContext;
+        this.navBuilder = navBuilder;
         this.refService = refService;
         this.repositoryService = repositoryService;
         this.permissionService = permissionService;
@@ -136,7 +141,9 @@ public class ChainsawServlet extends HttpServlet {
         int count = branchMap.size();
 
         Map<String, Object> parameters = new HashedMap();
-        parameters.put("branch", defaultBranch);
+        parameters.put("navBuilder", navBuilder);
+        parameters.put("defaultBranch", defaultBranch);
+        parameters.put("branches", branchMap);
         parameters.put("count", count);
         parameters.put("repository", repository);
 //        log.warn("form parametrs : " + parameters);
