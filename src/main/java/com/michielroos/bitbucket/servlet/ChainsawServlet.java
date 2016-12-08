@@ -13,9 +13,13 @@ package com.michielroos.bitbucket.servlet;
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
+import com.atlassian.bitbucket.auth.AuthenticationContext;
+import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.permission.PermissionService;
-import com.atlassian.bitbucket.repository.Repository;
-import com.atlassian.bitbucket.repository.RepositoryService;
+import com.atlassian.bitbucket.repository.*;
+import com.atlassian.bitbucket.user.ApplicationUser;
+import com.atlassian.bitbucket.util.PageRequest;
+import com.atlassian.bitbucket.util.PageRequestImpl;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import org.apache.commons.collections.map.HashedMap;
@@ -32,24 +36,37 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 @Scanned
 public class ChainsawServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(ChainsawServlet.class);
 
+    private static final int PAGE_SIZE = 1000;
+    @ComponentImport
+    private final AuthenticationContext authenticationContext;
+    @ComponentImport
+    private final RefService refService;
     @ComponentImport
     private final RepositoryService repositoryService;
     @ComponentImport
     private final PermissionService permissionService;
 
+
     @Inject
-    public ChainsawServlet(RepositoryService repositoryService, PermissionService permissionService) {
-        this.repositoryService = checkNotNull(repositoryService);
-        this.permissionService = checkNotNull(permissionService);
+    public ChainsawServlet(
+            @NotNull AuthenticationContext authenticationContext,
+            @NotNull RefService refService,
+            @NotNull RepositoryService repositoryService,
+            @NotNull PermissionService permissionService
+    ) {
+        this.authenticationContext = authenticationContext;
+        this.refService = refService;
+        this.repositoryService = repositoryService;
+        this.permissionService = permissionService;
     }
 
     @Override
@@ -71,12 +88,56 @@ public class ChainsawServlet extends HttpServlet {
 
         Repository repository = repositoryService.getBySlug(components[1], components[2]);
 
+        boolean canRead = true;
+
+        if (!permissionService.isPubliclyAccessible(repository)) {
+            ApplicationUser currentUser = authenticationContext.getCurrentUser();
+            canRead = permissionService.hasRepositoryPermission(currentUser, repository, Permission.REPO_READ);
+        }
+
+        if (!canRead) {
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
         if (repository == null) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
+        Branch defaultBranch = refService.getDefaultBranch(repository);
+
+        RepositoryBranchesRequest request = new RepositoryBranchesRequest
+                .Builder(repository)
+                .order(RefOrder.ALPHABETICAL)
+                .build();
+
+        PageRequest pageRequest = new PageRequestImpl(0, PAGE_SIZE);
+
+        Map<String, Branch> branchMap = new HashMap<String, Branch>();
+
+        while (true) {
+            com.atlassian.bitbucket.util.Page<? extends Branch> branchPage = refService.getBranches(request, pageRequest);
+
+            for (Branch b : branchPage.getValues()) {
+                if (branchMap.containsKey(b)) {
+                    log.error("Trying to insert existing key '" + b.getId() + "' into branchMap with value '" + b + "'");
+                    continue;
+                }
+                log.error("Inserting key '" + b.getId() + "' into branchMap with value '" + b + "'");
+                branchMap.put(b.getId(), b);
+            }
+            if (branchPage.getIsLastPage()) {
+                break;
+            }
+            pageRequest = branchPage.getNextPageRequest();
+        }
+
+        int count = branchMap.size();
+
         Map<String, Object> parameters = new HashedMap();
+        parameters.put("branch", defaultBranch);
+        parameters.put("count", count);
         parameters.put("repository", repository);
 //        log.warn("form parametrs : " + parameters);
         VelocityContext context = new VelocityContext(parameters);

@@ -11,8 +11,8 @@
 		<name>ℳichiel ℛoos</name>
 		<url>https://www.michielroos.com/</url>
 	</organization>
-	<name>chainsaw</name>
-	<description>This is the com.michielroos.bitbucket:chainsaw plugin for Atlassian Bitbucket Server.</description>
+	<name>Chainsaw</name>
+	<description>Trim away stale branches with ease.</description>
 	<packaging>atlassian-plugin</packaging>
 	<dependencyManagement>
 		<dependencies>

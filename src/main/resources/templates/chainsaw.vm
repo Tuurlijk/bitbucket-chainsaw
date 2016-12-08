@@ -15,6 +15,8 @@
 		<div class="aui-page-header-main"><h2>$i18n.getText('account.settings.servlet.header')</h2></div>
 	</div>
 </header>
+<p>$count branches in $repository.slug</p>
+<p>$branch.type $branch.id</p>
 <div class="aui-group account-settings">
 	<div class="aui-item keyboard-shortcut-context">
 		<form class="aui prevent-double-submit " action="" method="post" accept-charset="UTF-8">
