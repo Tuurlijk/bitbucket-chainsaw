@@ -126,10 +126,10 @@ public class ChainsawServlet extends HttpServlet {
 
             for (Branch b : branchPage.getValues()) {
                 if (branchMap.containsKey(b)) {
-                    log.error("Trying to insert existing key '" + b.getId() + "' into branchMap with value '" + b + "'");
+//                    log.error("Trying to insert existing key '" + b.getId() + "' into branchMap with value '" + b + "'");
                     continue;
                 }
-                log.error("Inserting key '" + b.getId() + "' into branchMap with value '" + b + "'");
+//                log.error("Inserting key '" + b.getId() + "' into branchMap with value '" + b + "'");
                 branchMap.put(b.getId(), b);
             }
             if (branchPage.getIsLastPage()) {
