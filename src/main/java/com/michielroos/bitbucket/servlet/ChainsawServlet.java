@@ -14,6 +14,9 @@ package com.michielroos.bitbucket.servlet;
  */
 
 import com.atlassian.bitbucket.auth.AuthenticationContext;
+import com.atlassian.bitbucket.commit.Commit;
+import com.atlassian.bitbucket.commit.CommitRequest;
+import com.atlassian.bitbucket.commit.CommitService;
 import com.atlassian.bitbucket.nav.NavBuilder;
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.permission.PermissionService;
@@ -53,6 +56,8 @@ public class ChainsawServlet extends HttpServlet {
     @ComponentImport
     private final AuthenticationContext authenticationContext;
     @ComponentImport
+    private final CommitService commitService;
+    @ComponentImport
     private final NavBuilder navBuilder;
     @ComponentImport
     private final RefService refService;
@@ -67,6 +72,7 @@ public class ChainsawServlet extends HttpServlet {
     @Inject
     public ChainsawServlet(
             @NotNull AuthenticationContext authenticationContext,
+            @NotNull CommitService commitService,
             @NotNull NavBuilder navBuilder,
             @NotNull RefService refService,
             @NotNull RepositoryService repositoryService,
@@ -74,6 +80,7 @@ public class ChainsawServlet extends HttpServlet {
             @NotNull ScmService scmService
     ) {
         this.authenticationContext = authenticationContext;
+        this.commitService = commitService;
         this.navBuilder = navBuilder;
         this.refService = refService;
         this.repositoryService = repositoryService;
@@ -150,6 +157,15 @@ public class ChainsawServlet extends HttpServlet {
         }
 
         int count = branchMap.size();
+
+
+        // Get commit timestamp
+        String latestCommit = defaultBranch.getLatestCommit();
+        CommitRequest commitRequest = new CommitRequest.Builder(repository, latestCommit).build();
+        Commit commit = commitService.getCommit(commitRequest);
+        log.error("Commit '" + commit.getId());
+        log.error("Commit date '" + commit.getAuthorTimestamp());
+
 
         Map<String, Object> parameters = new HashedMap();
         parameters.put("navBuilder", navBuilder);

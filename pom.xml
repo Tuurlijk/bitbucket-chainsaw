@@ -139,6 +139,7 @@
 				<version>${amps.version}</version>
 				<extensions>true</extensions>
 				<configuration>
+					<allowGoogleTracking>false</allowGoogleTracking>
 					<jvmArgs>-Xmx4096m -XX:MaxPermSize=4096m -Xms2048m -XX:PermSize=512m</jvmArgs>
 					<enableFastdev>false</enableFastdev>
 					<enableQuickReload>true</enableQuickReload>
