@@ -83,35 +83,23 @@ public class ChainsawServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-//        https://developer.atlassian.com/bitbucket/server/docs/latest/tutorials-and-examples/controlling-when-pull-requests-can-be-merged.html
-//    if (!permissionService.hasRepositoryPermission(request.getPullRequest().getToRef().getRepository(), Permission.REPO_ADMIN)) {
-//        //TODO: implement me
-//    }
-        // Get repoSlug from path
         String pathInfo = req.getPathInfo();
-
         String[] components = pathInfo.split("/");
-
         if (components.length < 3) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
         Repository repository = repositoryService.getBySlug(components[1], components[2]);
-
         boolean canRead = true;
-
         if (!permissionService.isPubliclyAccessible(repository)) {
             ApplicationUser currentUser = authenticationContext.getCurrentUser();
             canRead = permissionService.hasRepositoryPermission(currentUser, repository, Permission.REPO_READ);
         }
-
         if (!canRead) {
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
-
         if (repository == null) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
