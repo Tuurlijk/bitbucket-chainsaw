@@ -49,6 +49,13 @@
 		<dependency>
 			<groupId>com.atlassian.bitbucket.server</groupId>
 			<artifactId>bitbucket-git-api</artifactId>
+			<version>${bitbucket.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.bitbucket.server</groupId>
+			<artifactId>bitbucket-scm-common</artifactId>
+			<version>${bitbucket.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

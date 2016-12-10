@@ -18,6 +18,9 @@ import com.atlassian.bitbucket.nav.NavBuilder;
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.permission.PermissionService;
 import com.atlassian.bitbucket.repository.*;
+import com.atlassian.bitbucket.scm.ScmCommandBuilder;
+import com.atlassian.bitbucket.scm.ScmService;
+import com.atlassian.bitbucket.scm.git.command.GitScmCommandBuilder;
 import com.atlassian.bitbucket.user.ApplicationUser;
 import com.atlassian.bitbucket.util.PageRequest;
 import com.atlassian.bitbucket.util.PageRequestImpl;
@@ -57,6 +60,8 @@ public class ChainsawServlet extends HttpServlet {
     private final RepositoryService repositoryService;
     @ComponentImport
     private final PermissionService permissionService;
+    @ComponentImport
+    private final ScmService scmService;
 
 
     @Inject
@@ -65,13 +70,15 @@ public class ChainsawServlet extends HttpServlet {
             @NotNull NavBuilder navBuilder,
             @NotNull RefService refService,
             @NotNull RepositoryService repositoryService,
-            @NotNull PermissionService permissionService
+            @NotNull PermissionService permissionService,
+            @NotNull ScmService scmService
     ) {
         this.authenticationContext = authenticationContext;
         this.navBuilder = navBuilder;
         this.refService = refService;
         this.repositoryService = repositoryService;
         this.permissionService = permissionService;
+        this.scmService = scmService;
     }
 
     @Override
@@ -111,6 +118,22 @@ public class ChainsawServlet extends HttpServlet {
         }
 
         Branch defaultBranch = refService.getDefaultBranch(repository);
+
+        ScmCommandBuilder scmCommandBuilder = scmService.createBuilder(repository);
+        if (!(scmCommandBuilder instanceof GitScmCommandBuilder)) {
+            log.warn("Repository " + repository.getName() + " is not a git repo, cannot mirror");
+            return;
+        }
+        GitScmCommandBuilder gitScmCommandBuilder = (GitScmCommandBuilder) scmCommandBuilder;
+
+        String result = gitScmCommandBuilder
+                .command("branch")
+                .argument("--merged")
+                .argument(defaultBranch.getId())
+                .build(new StringOutputHandler())
+                .call();
+
+        log.error("Command result: '{}'.", result);
 
         RepositoryBranchesRequest request = new RepositoryBranchesRequest
                 .Builder(repository)
