@@ -17,18 +17,19 @@ import com.atlassian.bitbucket.auth.AuthenticationContext;
 import com.atlassian.bitbucket.commit.Commit;
 import com.atlassian.bitbucket.commit.CommitRequest;
 import com.atlassian.bitbucket.commit.CommitService;
+import com.atlassian.bitbucket.commit.MinimalCommit;
 import com.atlassian.bitbucket.nav.NavBuilder;
 import com.atlassian.bitbucket.permission.Permission;
 import com.atlassian.bitbucket.permission.PermissionService;
 import com.atlassian.bitbucket.repository.*;
-import com.atlassian.bitbucket.scm.ScmCommandBuilder;
 import com.atlassian.bitbucket.scm.ScmService;
-import com.atlassian.bitbucket.scm.git.command.GitScmCommandBuilder;
 import com.atlassian.bitbucket.user.ApplicationUser;
+import com.atlassian.bitbucket.util.Page;
 import com.atlassian.bitbucket.util.PageRequest;
 import com.atlassian.bitbucket.util.PageRequestImpl;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import com.michielroos.bitbucket.repository.ElaborateBranch;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -45,6 +46,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,7 +69,6 @@ public class ChainsawServlet extends HttpServlet {
     private final PermissionService permissionService;
     @ComponentImport
     private final ScmService scmService;
-
 
     @Inject
     public ChainsawServlet(
@@ -114,21 +115,21 @@ public class ChainsawServlet extends HttpServlet {
 
         Branch defaultBranch = refService.getDefaultBranch(repository);
 
-        ScmCommandBuilder scmCommandBuilder = scmService.createBuilder(repository);
-        if (!(scmCommandBuilder instanceof GitScmCommandBuilder)) {
-            log.warn("Repository " + repository.getName() + " is not a git repo, cannot mirror");
-            return;
-        }
-        GitScmCommandBuilder gitScmCommandBuilder = (GitScmCommandBuilder) scmCommandBuilder;
-
-        String result = gitScmCommandBuilder
-                .command("branch")
-                .argument("--merged")
-                .argument(defaultBranch.getId())
-                .build(new StringOutputHandler())
-                .call();
-
-        log.error("Command result: '{}'.", result);
+//        ScmCommandBuilder scmCommandBuilder = scmService.createBuilder(repository);
+//        if (!(scmCommandBuilder instanceof GitScmCommandBuilder)) {
+//            log.warn("Repository " + repository.getName() + " is not a git repo, cannot mirror");
+//            return;
+//        }
+//        GitScmCommandBuilder gitScmCommandBuilder = (GitScmCommandBuilder) scmCommandBuilder;
+//
+//        String result = gitScmCommandBuilder
+//                .command("branch")
+//                .argument("--merged")
+//                .argument(defaultBranch.getId())
+//                .build(new StringOutputHandler())
+//                .call();
+//
+//        log.error("Command result: '{}'.", result);
 
         RepositoryBranchesRequest request = new RepositoryBranchesRequest
                 .Builder(repository)
@@ -137,18 +138,26 @@ public class ChainsawServlet extends HttpServlet {
 
         PageRequest pageRequest = new PageRequestImpl(0, PAGE_SIZE);
 
-        Map<String, Branch> branchMap = new HashMap<String, Branch>();
+        Map<String, ElaborateBranch> branchMap = new HashMap<String, ElaborateBranch>();
 
         while (true) {
-            com.atlassian.bitbucket.util.Page<? extends Branch> branchPage = refService.getBranches(request, pageRequest);
+            Page<com.atlassian.bitbucket.repository.Branch> branchPage = refService.getBranches(request, pageRequest);
 
-            for (Branch b : branchPage.getValues()) {
+            for (com.atlassian.bitbucket.repository.Branch b : branchPage.getValues()) {
+                String latestCommit = b.getLatestCommit();
+                CommitRequest commitRequest = new CommitRequest.Builder(repository, latestCommit).build();
+
                 if (branchMap.containsKey(b)) {
 //                    log.error("Trying to insert existing key '" + b.getId() + "' into branchMap with value '" + b + "'");
                     continue;
                 }
-//                log.error("Inserting key '" + b.getId() + "' into branchMap with value '" + b + "'");
-                branchMap.put(b.getId(), b);
+
+                //                log.error("Inserting key '" + b.getId() + "' into branchMap with value '" + b + "'");
+                ElaborateBranch.Builder elaborateBranchBuilder = new ElaborateBranch.Builder(b);
+                elaborateBranchBuilder.setLastCommit(commitService.getCommit(commitRequest));
+                ElaborateBranch elaborateBranch = elaborateBranchBuilder.build();
+
+                branchMap.put(b.getId(), elaborateBranch);
             }
             if (branchPage.getIsLastPage()) {
                 break;
@@ -158,7 +167,6 @@ public class ChainsawServlet extends HttpServlet {
 
         int count = branchMap.size();
 
-
         // Get commit timestamp
         String latestCommit = defaultBranch.getLatestCommit();
         CommitRequest commitRequest = new CommitRequest.Builder(repository, latestCommit).build();
@@ -166,7 +174,11 @@ public class ChainsawServlet extends HttpServlet {
         log.error("Commit '" + commit.getId());
         log.error("Commit date '" + commit.getAuthorTimestamp());
 
+        Collection<MinimalCommit> parents = commit.getParents();
 
+        for (MinimalCommit minimalCommit : parents) {
+            log.error("Parent: '" + minimalCommit.toString());
+        }
         Map<String, Object> parameters = new HashedMap();
         parameters.put("navBuilder", navBuilder);
         parameters.put("defaultBranch", defaultBranch);

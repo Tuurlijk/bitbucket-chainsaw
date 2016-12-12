@@ -1,6 +1,4 @@
-package com.michielroos.bitbucket.servlet;
-
-/**
+package com.michielroos.bitbucket.handler; /**
  * Copyright notice
  *
  * ⓒ 2016 Michiel Roos <michiel@michielroos.com>
@@ -20,7 +18,7 @@ import com.atlassian.utils.process.Watchdog;
 
 import java.io.IOException;
 
-class StringOutputHandler extends LineReaderOutputHandler implements CommandOutputHandler<String> {
+public class StringOutputHandler extends LineReaderOutputHandler implements CommandOutputHandler<String> {
     private final StringBuilder stringBuilder;
     private Watchdog watchdog;
 

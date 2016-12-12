@@ -52,6 +52,7 @@
 		</td>
 	##				<td headers="pull-requests-column" class="pull-requests-column"></td>
 		<td headers="branch-actions-column" class="branch-actions-column">
+			$branch.type
 		</td>
 	</tr>
 		#foreach ($branch in $branches)
@@ -78,10 +79,11 @@
 			##					</div>
 			##				</td>
 				<td headers="last-updated-column" class="last-updated-column">
-					<time title="Last updated by Michael Heemskerk on 20 December 2010 04:41 AM" datetime="2010-12-20T04:41:15+0100">20 Dec 2010</time>
+					<time title="Last updated by Michael Heemskerk on 20 December 2010 04:41 AM" datetime="2010-12-20T04:41:15+0100">$branch.getLastCommit().getAuthorTimestamp()</time>
 				</td>
 			##				<td headers="pull-requests-column" class="pull-requests-column"></td>
 				<td headers="branch-actions-column" class="branch-actions-column">
+					$branch.type
 					<input type="checkbox" value="$branch.id"/>
 				</td>
 			</tr>
