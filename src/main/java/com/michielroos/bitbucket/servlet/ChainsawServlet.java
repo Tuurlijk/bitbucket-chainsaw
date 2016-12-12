@@ -38,6 +38,7 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.format.datetime.DateFormatter;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -46,6 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -183,6 +185,7 @@ public class ChainsawServlet extends HttpServlet {
         parameters.put("navBuilder", navBuilder);
         parameters.put("defaultBranch", defaultBranch);
         parameters.put("branches", branchMap);
+        parameters.put("date", new SimpleDateFormat("dd MMM yyyy"));
         parameters.put("count", count);
         parameters.put("repository", repository);
 //        log.warn("form parametrs : " + parameters);
