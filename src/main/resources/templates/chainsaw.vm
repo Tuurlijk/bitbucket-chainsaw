@@ -60,7 +60,8 @@
 				<td headers="branch-name-column" class="branch-name-column">
 					<div><span class="aui-icon aui-icon-small aui-iconfont-devtools-branch"></span>
 						<div class="line">
-							<a href="$navBuilder.repo($repository).compare().sourceBranch($branch.id).targetBranch($defaultBranch.id).buildRelative()" title="$branch.displayId">$branch.displayId</a>
+							<a href="$navBuilder.repo($repository).compare().sourceBranch($branch.id).targetBranch($defaultBranch.id).buildRelative()"
+							   title="$branch.displayId">$branch.displayId</a>
 						</div>
 					</div>
 				</td>
@@ -78,7 +79,10 @@
 			##					</div>
 			##				</td>
 				<td headers="last-updated-column" class="last-updated-column">
-					<time title="Last updated by $branch.getLastCommit().getAuthor().getName() on $date.format($branch.getLastCommit().getAuthorTimestamp()) 04:41 AM" datetime="2010-12-20T04:41:15+0100">$date.format($branch.getLastCommit().getAuthorTimestamp())</time>
+					<time title="Last updated by $branch.getLastCommit().getAuthor().getName() on $longDate.format($branch.getLastCommit().getAuthorTimestamp())"
+							  datetime="$machineDate.format($branch.getLastCommit().getAuthorTimestamp())">
+						$shortDate.format($branch.getLastCommit().getAuthorTimestamp())
+					</time>
 				</td>
 			##				<td headers="pull-requests-column" class="pull-requests-column"></td>
 				<td headers="branch-actions-column" class="branch-actions-column">

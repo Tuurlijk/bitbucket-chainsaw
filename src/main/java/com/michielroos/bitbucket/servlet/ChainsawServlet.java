@@ -38,7 +38,6 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.format.datetime.DateFormatter;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -148,13 +147,9 @@ public class ChainsawServlet extends HttpServlet {
             for (com.atlassian.bitbucket.repository.Branch b : branchPage.getValues()) {
                 String latestCommit = b.getLatestCommit();
                 CommitRequest commitRequest = new CommitRequest.Builder(repository, latestCommit).build();
-
                 if (branchMap.containsKey(b)) {
-//                    log.error("Trying to insert existing key '" + b.getId() + "' into branchMap with value '" + b + "'");
                     continue;
                 }
-
-                //                log.error("Inserting key '" + b.getId() + "' into branchMap with value '" + b + "'");
                 ElaborateBranch.Builder elaborateBranchBuilder = new ElaborateBranch.Builder(b);
                 elaborateBranchBuilder.setLastCommit(commitService.getCommit(commitRequest));
                 ElaborateBranch elaborateBranch = elaborateBranchBuilder.build();
@@ -185,10 +180,11 @@ public class ChainsawServlet extends HttpServlet {
         parameters.put("navBuilder", navBuilder);
         parameters.put("defaultBranch", defaultBranch);
         parameters.put("branches", branchMap);
-        parameters.put("date", new SimpleDateFormat("dd MMM yyyy"));
+        parameters.put("longDate", new SimpleDateFormat("dd MMMM yyyy HH:mm a"));
+        parameters.put("shortDate", new SimpleDateFormat("dd MMM yyyy"));
+        parameters.put("machineDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ"));
         parameters.put("count", count);
         parameters.put("repository", repository);
-//        log.warn("form parametrs : " + parameters);
         VelocityContext context = new VelocityContext(parameters);
         VelocityEngine engine = new VelocityEngine();
         engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
