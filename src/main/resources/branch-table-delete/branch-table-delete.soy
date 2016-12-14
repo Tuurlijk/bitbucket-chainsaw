@@ -5,6 +5,8 @@
  */
 {template .delete}
 	{if $branch.isDefault == false}
-		<input type="checkbox" value="$branch.id" class="branch-list-delete" data-branch-id="{$branch.id}"/>
+	<div class="checkbox">
+		<input type="checkbox" name="delete" value="{$branch.id}" class="branch-list-delete" data-branch-id="{$branch.id}"/>
+	</div>
 	{/if}
 {/template}

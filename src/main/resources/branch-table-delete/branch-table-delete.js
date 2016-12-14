@@ -12,17 +12,15 @@ define('michielroos/bitbucket/chainsaw/branch-table-delete',
         'use strict';
 
         exports.onReady = function() {
-            console.warn('ohai');
-            // $('.branch-list-panel').on('click', '.pull-request-list-trigger', function(e) {
-            //     if (e.target.tagName === 'A' && !domEventUtil.openInSameTab(e)) {
-            //         // The user is attempting to open the PR in a separate tab/window.
-            //         // Let the browser handle the click event natively
-            //         return;
-            //     }
-            //     e.preventDefault();
-            //     var branchId = $(this).closest('[data-branch-id]').attr('data-branch-id');
-            //     PullRequestDialog.showFor('outgoing', branchId, 'all', 'newest');
-            // });
+            var $container = $('.aui-toolbar2-secondary.commit-badge-container');
+            $container.prepend('<button class="aui-button"><span class="aui-icon aui-icon-small aui-iconfont-delete">Delete </span> Delete checked branches</button> ');
+
+
+            $('#delete-column').on('click', function(e) {
+                console.warn('del cell clicked');
+                e.preventDefault();
+                // var branchId = $(this).closest('[data-branch-id]').attr('data-branch-id');
+            });
 
             // $('.pull-request-list-trigger').tooltip({
             //     gravity: 'n',
