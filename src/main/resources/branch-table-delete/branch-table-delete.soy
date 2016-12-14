@@ -1,0 +1,10 @@
+{namespace com.michielroos.bitbucket.chainsaw.branch.table}
+
+/**
+ * @param branch
+ */
+{template .delete}
+	{if $branch.isDefault == false}
+		<input type="checkbox" value="$branch.id" class="branch-list-delete" data-branch-id="{$branch.id}"/>
+	{/if}
+{/template}

@@ -48,4 +48,21 @@
 		<dependency>com.atlassian.bitbucket.server.bitbucket-web:branch-table</dependency>
 		<context>atl.general</context>
 	</web-resource>
+
+	<!-- Branch List - Delete Column -->
+
+	<client-web-section key="delete-column" name="Delete column" weight="250" location="bitbucket.branches.extras">
+		<label key="chainsaw.feature.repository.branch.table.delete"/>
+	</client-web-section>
+
+	<client-web-panel key="delete-cell" name="Delete cell" location="delete-column" weight="20">
+		<resource name="view" type="soy" location="com.michielroos.bitbucket.chainsaw:branch-table-delete-resources/com.michielroos.bitbucket.chainsaw.branch.table.delete"/>
+		<dependency>com.michielroos.bitbucket.chainsaw:branch-table-delete-resources</dependency>
+	</client-web-panel>
+
+	<client-resource key="branch-table-delete-resources" name="Branch Table Delete Column Resources">
+		<directory location="/branch-table-delete/"/>
+		<dependency>com.atlassian.bitbucket.server.bitbucket-web:global</dependency>
+	</client-resource>
+
 </atlassian-plugin>
