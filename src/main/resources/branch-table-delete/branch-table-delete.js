@@ -20,10 +20,12 @@
 define('michielroos/bitbucket/chainsaw/branch-table-delete',
     [
         'jquery',
+        'lodash',
         'bitbucket/internal/util/dom-event',
         'michielroos/bitbucket/chainsaw/branch-deletion',
         'exports'],
     function($,
+             _,
              domEventUtil,
              branchDeletion,
              exports) {
@@ -32,17 +34,33 @@ define('michielroos/bitbucket/chainsaw/branch-table-delete',
 
         exports.onReady = function() {
             var $container = $('.aui-toolbar2-secondary.commit-badge-container');
-            $container.prepend('<button class="aui-button" id="delete-checked-branches"><span class="aui-icon aui-icon-small aui-iconfont-delete">Delete </span> Delete checked branches</button> ');
+            $container.append(' <div class="aui-buttons">' +
+                '    <button class="aui-button aui-button-split-main" id="delete-checked-branches"><span class="aui-icon aui-icon-small aui-iconfont-delete">Delete </span> Delete checked branches</button>' +
+                '    <button class="aui-button aui-dropdown2-trigger aui-button-split-more" aria-haspopup="true" aria-owns="split-container-delete-checked-branches">Options</button></div>' +
+                '    <div id="split-container-delete-checked-branches" class="aui-dropdown2 aui-style-default aui-layer aui-alignment-element aui-alignment-side-bottom aui-alignment-snap-right aui-alignment-out-of-bounds aui-alignment-out-of-bounds-bottom aui-alignment-out-of-bounds-left aui-alignment-element-attached-top aui-alignment-element-attached-right aui-alignment-target-attached-bottom aui-alignment-target-attached-right" role="menu" aria-hidden="true" resolved="" data-aui-alignment-container="#delete-checked-branches" data-aui-alignment="bottom auto" data-aui-alignment-static="true">' +
+                '	<ul class="aui-list-truncate" id="delete-checked-branches-options">' +
+                '		<li><a class="check-all" href="#" tabindex="-1">Check all</a></li>' +
+                '		<li><a class="toggle" href="#" tabindex="-1">Toggle selection</a></li>' +
+                // '		<li><a class="check-all-merged" href="#" tabindex="-1">Select only merged branches</a></li>' +
+                // '		<li><a class="check-all-merged-6m" href="#" tabindex="-1">Select only merged branches over 6 months old</a></li>' +
+                // '		<li><a class="check-all-merged-12m" href="#" tabindex="-1">Select only merged branches over 1 year old</a></li>' +
+                '	</ul>' +
+                '</div></div>' +
+                '');
 
-            $('#delete-column')
-                .attr('title', 'Click to toggle checkboxes')
-                .tooltip({
-                    gravity: 'n',
-                    live: true
-                })
+            $('#delete-checked-branches-options .toggle')
                 .on('click', function(e) {
                     var checkBoxes = $(branchListTable).find('input[type=checkbox]');
-                    checkBoxes.prop('checked', !checkBoxes.prop('checked'));
+                    _.forEach(checkBoxes, function(checkbox) {
+                        $(checkbox).prop('checked', !$(checkbox).prop('checked'));
+                    });
+                });
+
+            $('#delete-checked-branches-options .check-all')
+                .on('click', function(e) {
+                    var checkBoxes = $(branchListTable).find('input[type=checkbox]');
+                    checkBoxes.prop('checked', 'checked');
+                    e.preventDefault();
                 });
         };
     });

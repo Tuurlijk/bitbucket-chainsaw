@@ -20,6 +20,7 @@
 define('michielroos/bitbucket/chainsaw/branch-deletion', [
     'aui',
     'jquery',
+    'lodash',
     'bitbucket/util/navbuilder',
     'bitbucket/internal/model/page-state',
     'bitbucket/internal/util/ajax',
@@ -28,6 +29,7 @@ define('michielroos/bitbucket/chainsaw/branch-deletion', [
     'exports'
 ], function(AJS,
             $,
+            _,
             nav,
             pageState,
             ajax,
@@ -46,7 +48,7 @@ define('michielroos/bitbucket/chainsaw/branch-deletion', [
         var branches = [];
         $(branchListTable).find('input[type=checkbox]:checked').each(
             function() {
-                let branch = {};
+                var branch = {};
                 branch.id = $(this).data('branch-id');
                 branch.displayId = $(this).data('branch-display-id');
                 branch.latestCommit = $(this).data('latest-commit');
@@ -82,7 +84,7 @@ define('michielroos/bitbucket/chainsaw/branch-deletion', [
     function addErrorNotifications(errors) {
         if (errors && errors.length > 0) {
             var errorBody = '';
-            errors.forEach(function(error) {
+            _.forEach(errors, function(error) {
                 errorBody += bitbucket.internal.widget.errorContent(error);
             });
             require(['aui/flag'], function(flag) {
@@ -107,7 +109,7 @@ define('michielroos/bitbucket/chainsaw/branch-deletion', [
         dialog.addConfirmListener(function(promise, $trigger, removeDialog, dialog, $spinner) {
             var branches = getBranchData();
             $spinner.show();
-            branches.forEach(function(branch) {
+            _.forEach(branches, function(branch) {
                 deleteBranchByRest(branch.displayId, branch.latestCommit).done(function() {
                     events.trigger('bitbucket.internal.page.branches.revisionRefRemoved', null, {
                         id: branch.id,
@@ -124,7 +126,7 @@ define('michielroos/bitbucket/chainsaw/branch-deletion', [
         dialog.attachTo(linkSelector, function(trigger, dialog) {
             var branches = getBranchData(),
                 branchNames = [];
-            branches.forEach(function(branch) {
+            _.forEach(branches, function(branch) {
                 branchNames.push(branch.displayId);
             });
             dialog.getCurrentPanel().body.find('.branch-name').text(branchNames.join(', '));
