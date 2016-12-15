@@ -1,3 +1,54 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 280 280">
- <path fill="#707070" d="m2.6e2 48-8 5.2c-5.6-5.6-13-9.8-20-12l1.1-5.8c1-5-2.2-9.9-7.2-11l-.56-.14c-5-1-9.9 2.5-11 7.4l-2 8.1c-6.1.84-12 3.1-18 6.6l-4.8-7.2c-2.8-4.2-7.4-5.5-12-2.7l-.47.31c-4.2 2.8-6.5 8.5-3.7 13l5 7.7-22 15-5-7.7c-2.8-4.2-7.4-5.5-12-2.7l-.47.31c-4.2 2.8-6.5 8.5-3.7 13l5 7.7-23 15-5-7.7c-2.8-4.2-7.4-5.5-12-2.7l-.47.31c-4.2 2.8-6.5 8.5-3.7 13l5 7.7-22 14c-3.9-4.1-9.5-4.4-14-1.5l-22 15-15-23c-2.8-4.2-7.4-5.5-12-2.7l-.47.31c-4.2 2.8-6.5 8.5-3.7 13l15 23-4.8 3.2c-5.1 3.4-9.6 11-9.8 17l-1.6 42c-.16 6.1 2 15 5.4 21l19 29c3.4 5.1 11 6.5 16 3.2l74-48c4.5-2.9 5.8-9.1 4.2-13l22-14 3.8 5.8c2.8 4.2 9.6 5.4 14 2.6l.47-.31c4.2-2.8 4.3-8.4 1.6-13l-3.8-5.8 23-15 3.8 5.8c2.8 4.2 9.6 5.4 14 2.6l.47-.31c4.2-2.8 4.3-8.4 1.6-13l-3.8-5.8 22-15 3.8 5.8c2.8 4.2 9.6 5.4 14 2.6l.47-.31c4.2-2.8 4.3-8.4 1.6-13l-4.1-6.3c5.5-3.8 10-8.7 13-14l7.5 1.4c5 1 10-2.2 11-7.2l.16-.58c1-5-2.5-9.9-7.5-11l-4.4-.72c.98-7.6.24-15-2.7-23l8-5.2c4.2-2.8 4.3-8.4 1.6-13l-.31-.47c-2.8-4.2-7.4-5.5-12-2.7zm-38 57c-8.5 5.6-20 3.2-25-5.3-5.6-8.5-3.2-20 5.3-25 8.5-5.6 20-3.2 25 5.3 5.6 8.5 3.2 20-5.3 25z"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   viewBox="0 0 280 280"
+   id="svg2"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="chainsaw.svg">
+  <metadata
+     id="metadata10">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1468"
+     inkscape:window-height="1012"
+     id="namedview6"
+     showgrid="false"
+     inkscape:zoom="3.33"
+     inkscape:cx="132.49249"
+     inkscape:cy="140"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <path
+     d="m 260,48 -8,5.2 c -5.6,-5.6 -13,-9.8 -20,-12 l 1.1,-5.8 c 1,-5 -2.2,-9.9 -7.2,-11 l -0.56,-0.14 c -5,-1 -9.9,2.5 -11,7.4 l -2,8.1 c -6.1,0.84 -12,3.1 -18,6.6 l -4.8,-7.2 c -2.8,-4.2 -7.4,-5.5 -12,-2.7 l -0.47,0.31 c -4.2,2.8 -6.5,8.5 -3.7,13 l 5,7.7 -22,15 -5,-7.7 c -2.8,-4.2 -7.4,-5.5 -12,-2.7 l -0.47,0.31 c -4.2,2.8 -6.5,8.5 -3.7,13 l 5,7.7 -23,15 -5,-7.7 c -2.8,-4.2 -7.4,-5.5 -12,-2.7 l -0.47,0.31 c -4.2,2.8 -6.5,8.5 -3.7,13 l 5,7.7 -22,14 c -3.9,-4.1 -9.5,-4.4 -14,-1.5 l -22,15 -15,-23 c -2.8,-4.2 -7.4,-5.5 -12,-2.7 l -0.47,0.31 c -4.2,2.8 -6.5,8.5 -3.7,13 l 15,23 -4.8,3.2 c -5.1,3.4 -9.6,11 -9.8,17 l -1.6,42 c -0.16,6.1 2,15 5.4,21 l 19,29 c 3.4,5.1 11,6.5 16,3.2 l 74,-48 c 4.5,-2.9 5.8,-9.1 4.2,-13 l 22,-14 3.8,5.8 c 2.8,4.2 9.6,5.4 14,2.6 l 0.47,-0.31 c 4.2,-2.8 4.3,-8.4 1.6,-13 l -3.8,-5.8 23,-15 3.8,5.8 c 2.8,4.2 9.6,5.4 14,2.6 l 0.47,-0.31 c 4.2,-2.8 4.3,-8.4 1.6,-13 l -3.8,-5.8 22,-15 3.8,5.8 c 2.8,4.2 9.6,5.4 14,2.6 l 0.47,-0.31 c 4.2,-2.8 4.3,-8.4 1.6,-13 l -4.1,-6.3 c 5.5,-3.8 10,-8.7 13,-14 l 7.5,1.4 c 5,1 10,-2.2 11,-7.2 l 0.16,-0.58 c 1,-5 -2.5,-9.9 -7.5,-11 l -4.4,-0.72 c 0.98,-7.6 0.24,-15 -2.7,-23 l 8,-5.2 c 4.2,-2.8 4.3,-8.4 1.6,-13 l -0.31,-0.47 c -2.8,-4.2 -7.4,-5.5 -12,-2.7 z m -38,57 C 116.8033,176.36577 119.19041,181.08492 105.64407,162.58136 92.413386,142.63533 95.601801,145.46576 202.3,74.7 c 8.5,-5.6 20,-3.2 25,5.3 5.6,8.5 3.2,20 -5.3,25 z"
+     id="path4"
+     inkscape:connector-curvature="0"
+     style="fill:#707070"
+     sodipodi:nodetypes="cccccccccsccccccccccccccccccccccccscccccccccccccccccccccccccccccccccccccccccc" />
 </svg>

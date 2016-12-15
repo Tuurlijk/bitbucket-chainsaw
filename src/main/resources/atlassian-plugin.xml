@@ -7,49 +7,22 @@
 		<vendor name="${project.organization.name}" url="${project.organization.url}"/>
 		<param name="plugin-icon">images/pluginIcon.png</param>
 		<param name="plugin-logo">images/pluginLogo.png</param>
+		<param name="atlassian-data-center-compatible">true</param>
 	</plugin-info>
 	<!-- add our i18n resource -->
 	<resource type="i18n" name="i18n" location="chainsaw"/>
 
-	<servlet name="Chainsaw Servlet" i18n-name-key="chainsaw-servlet.name" key="chainsaw-servlet" class="com.michielroos.bitbucket.servlet.ChainsawServlet">
-		<description key="chainsaw-servlet.description"/>
-		<conditions type="AND">
-			<condition class="com.atlassian.bitbucket.web.conditions.IsLoggedInCondition"/>
-		</conditions>
-		<url-pattern>/michielroos/chainsaw/repository/*</url-pattern>
-	</servlet>
-
-	<web-resource key="bitbucket.repository.nav.resources" name="Repository navigation resources">
-		<resource type="download" name="repository.css" location="/css/repository.css"/>
-		<resource type="download" name="chainsaw.svg" location="/images/chainsaw.svg">
-			<param name="content-type" value="image/svg+xml"/>
-		</resource>
-		<context>atl.general</context>
-	</web-resource>
-
-	<web-item name="Chainsaw" i18n-name-key="chainsaw.name" key="bitbucket.repository.nav.chainsaw" section="bitbucket.repository.nav" weight="1000">
-		<description key="chainsaw.description">Repository navigation item</description>
-		<conditions type="AND">
-			<condition class="com.atlassian.bitbucket.web.conditions.HasRepositoryPermissionCondition">
-				<param name="permission">REPO_READ</param>
-			</condition>
-			<condition class="com.atlassian.bitbucket.web.conditions.RepositoryNotEmptyCondition"/>
-		</conditions>
-		<label key="chainsaw.label"/>
-		<link linkId="repository-nav-chainsaw">/plugins/servlet/michielroos/chainsaw/repository/${repository.project.key}/${repository.slug}</link>
-		<tooltip key="chainsaw.tooltip"/>
-		<!-- optional style for the icon: see https://design.atlassian.com/2.0/product/foundations/iconography for a list of available images -->
-		<param name="iconClass" value="chainsaw-icon"/>
-	</web-item>
-
-	<web-resource key="branch-table.webresources" name="Branch Table Resources">
-		<resource type="download" name="branch-table-ie9.css" location="/branch-table/branch-table-ie9.css"/>
-		<resource type="download" name="branch-table.css" location="/branch-table/branch-table.css"/>
-		<dependency>com.atlassian.bitbucket.server.bitbucket-web:branch-table</dependency>
-		<context>atl.general</context>
-	</web-resource>
-
 	<!-- Branch List - Delete Column -->
+
+	<client-resource key="branch-deletion-resources" name="Branch Deletion Resources">
+		<directory location="/branch-deletion/"/>
+		<dependency>com.atlassian.bitbucket.server.bitbucket-web:global</dependency>
+	</client-resource>
+
+	<client-resource key="branch-table-delete-resources" name="Branch Table Delete Column Resources">
+		<directory location="/branch-table-delete/"/>
+		<dependency>com.atlassian.bitbucket.server.bitbucket-web:global</dependency>
+	</client-resource>
 
 	<client-web-section key="delete-column" name="Delete column" weight="250" location="bitbucket.branches.extras">
 		<label key="chainsaw.feature.repository.branch.table.delete"/>
@@ -57,12 +30,8 @@
 
 	<client-web-panel key="delete-cell" name="Delete cell" location="delete-column" weight="20">
 		<resource name="view" type="soy" location="com.michielroos.bitbucket.chainsaw:branch-table-delete-resources/com.michielroos.bitbucket.chainsaw.branch.table.delete"/>
+		<dependency>com.michielroos.bitbucket.chainsaw:branch-deletion-resources</dependency>
 		<dependency>com.michielroos.bitbucket.chainsaw:branch-table-delete-resources</dependency>
 	</client-web-panel>
-
-	<client-resource key="branch-table-delete-resources" name="Branch Table Delete Column Resources">
-		<directory location="/branch-table-delete/"/>
-		<dependency>com.atlassian.bitbucket.server.bitbucket-web:global</dependency>
-	</client-resource>
 
 </atlassian-plugin>
