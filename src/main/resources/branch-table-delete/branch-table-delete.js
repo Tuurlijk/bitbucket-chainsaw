@@ -89,7 +89,7 @@ define('michielroos/bitbucket/chainsaw/branch-table-delete',
                         now = new Date() / 1000 | 0;
                     $(branchListTable).find('input[type=checkbox]').prop('checked', false);
                     _.forEach(checkBoxes, function(checkbox) {
-                        lastModification = new Date($(checkbox).closest('tr').find('td.last-updated-column time').prop('dateTime')) / 1000 | 0;
+                        lastModification = new Date($(checkbox).closest('tr').find('td.last-updated-column time').prop('datetime')) / 1000 | 0;
                         if (((now - lastModification) / 3600 / 24) > 182) {
                             $(checkbox).prop('checked', 'checked');
                         }
@@ -104,7 +104,7 @@ define('michielroos/bitbucket/chainsaw/branch-table-delete',
                         now = new Date() / 1000 | 0;
                     $(branchListTable).find('input[type=checkbox]').prop('checked', false);
                     _.forEach(checkBoxes, function(checkbox) {
-                        lastModification = new Date($(checkbox).closest('tr').find('td.last-updated-column time').prop('dateTime')) / 1000 | 0;
+                        lastModification = new Date($(checkbox).closest('tr').find('td.last-updated-column time').prop('datetime')) / 1000 | 0;
                         if (((now - lastModification) / 3600 / 24) >= 365) {
                             $(checkbox).prop('checked', 'checked');
                         }
