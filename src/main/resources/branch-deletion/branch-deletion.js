@@ -18,27 +18,20 @@
 'use strict';
 
 define('michielroos/bitbucket/chainsaw/branch-deletion', [
-    'aui',
+    '@atlassian/aui',
     'jquery',
     'lodash',
     'bitbucket/util/navbuilder',
-    'bitbucket/internal/model/page-state',
-    'bitbucket/internal/util/ajax',
-    'bitbucket/internal/util/events',
-    'bitbucket/internal/widget/confirm-dialog',
-    'exports'
+    'bitbucket/util/state',
+    'bitbucket/util/server'
 ], function(AJS,
             $,
             _,
             nav,
-            pageState,
-            ajax,
-            events,
-            ConfirmDialog,
-            exports) {
+            state,
+            server) {
 
     var branchListTable = '#branch-list';
-    var linkSelector = '#delete-checked-branches';
 
     /**
      * Get Branch data
@@ -60,14 +53,15 @@ define('michielroos/bitbucket/chainsaw/branch-deletion', [
 
     function getBranchRestUrl() {
         return nav.rest('branch-utils')
-            .project(pageState.getProject().getKey())
-            .repo(pageState.getRepository().getSlug())
+            .project(state.getProject().key)
+            .repo(state.getRepository().slug)
             .addPathComponents('branches').build();
     }
 
     function deleteBranchByRest(branchName, latestCommit) {
-        return ajax.rest({
-            url: getBranchRestUrl(),
+        var url = getBranchRestUrl();
+        return server.rest({
+            url: url,
             type: 'DELETE',
             data: {
                 name: branchName,
@@ -97,47 +91,64 @@ define('michielroos/bitbucket/chainsaw/branch-deletion', [
     }
 
     function createConfirmationDialog() {
-        var dialog = new ConfirmDialog({
-            id: 'delete-branch-dialog',
-            titleText: AJS.I18n.getText('bitbucket.feature.branch-deletion.dialog.title'),
-            titleClass: 'warning-header',
-            panelContent: com.michielroos.bitbucket.chainsaw.branchDeletion.dialog(),
-            submitText: AJS.I18n.getText('bitbucket.web.button.delete'),
-            submitToHref: false
+
+        var title = AJS.I18n.getText('bitbucket.feature.branch-deletion.dialog.title');
+        var mainText = AJS.I18n.getText('chainsaw.feature.repository.branch.table.delete.text');
+        var confirmText = AJS.I18n.getText('bitbucket.web.button.delete');
+        var cancelText = AJS.I18n.getText('bitbucket.web.button.cancel');
+
+        var dialogTemplate =
+            '<section id="delete-branch-dialog" class="aui-dialog2 aui-dialog2-medium aui-dialog2-warning aui-layer" role="dialog" aria-hidden="true">' +
+            '    <header class="aui-dialog2-header">' +
+            '        <h2 class="aui-dialog2-header-main">'+title+'</h2>' +
+            '        <a class="aui-dialog2-header-close">' +
+            '            <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">Close</span>' +
+            '        </a>' +
+            '    </header>' +
+            '    <div class="aui-dialog2-content"><p>'+mainText+'</p></div>' +
+            '    <footer class="aui-dialog2-footer">' +
+            '        <div class="aui-dialog2-footer-actions">' +
+            '            <button id="delete-branch-confirm" class="aui-button aui-button-primary">'+confirmText+'</button>' +
+            '            <button id="delete-branch-cancel" class="aui-button aui-button-link">'+cancelText+'</button>' +
+            '        </div>' +
+            '    </footer>' +
+            '</section>'
+            ;
+
+        var dialog = $(dialogTemplate);
+        dialog.appendTo($("body"));
+
+        var dialogRef = AJS.dialog2(dialog);
+
+        $("#delete-checked-branches").click(function (e) {
+            e.preventDefault();
+            dialogRef.show();
         });
 
-        dialog.addConfirmListener(function(promise, $trigger, removeDialog, dialog, $spinner) {
-            var branches = getBranchData();
-            $spinner.show();
-            _.forEach(branches, function(branch) {
-                deleteBranchByRest(branch.displayId, branch.latestCommit).done(function() {
-                    events.trigger('bitbucket.internal.page.branches.revisionRefRemoved', null, {
-                        id: branch.id,
-                        displayId: branch.displayId,
-                        latestCommit: branch.latestCommit
-                    });
-                }).fail(function(xhr, textStatus, errorThrown, data) {
-                    addErrorNotifications(data && data.errors);
-                }).always(removeDialog);
-            });
-            removeDialog();
-        });
+        $(document).on("click", "#delete-branch-dialog button", function (e) {
+            e.preventDefault();
 
-        dialog.attachTo(linkSelector, function(trigger, dialog) {
-            var branches = getBranchData(),
-                branchNames = [];
-            _.forEach(branches, function(branch) {
-                branchNames.push(branch.displayId);
-            });
-            dialog.getCurrentPanel().body.find('.branch-name').text(branchNames.join(', '));
-        }, document);
+            if (this.id === 'delete-branch-confirm') {
+                var branches = getBranchData();
+
+                _.forEach(branches, function (branch) {
+                    deleteBranchByRest(branch.displayId, branch.latestCommit).done(function () {
+                        // internal events aren't supported anymore, lets just refresh the page
+                        location.reload();
+                    }).fail(function (xhr, textStatus, errorThrown, data) {
+                        addErrorNotifications(data && data.errors);
+                    }).always(dialogRef.hide);
+                });
+            }
+            dialogRef.hide();
+        });
     }
 
-    exports.onReady = function() {
+    AJS.$(document).ready(function() {
         createConfirmationDialog();
-    };
+    });
 });
 
-jQuery(document).ready(function() {
-    require('michielroos/bitbucket/chainsaw/branch-deletion').onReady();
+AJS.$(document).ready(function() {
+    require('michielroos/bitbucket/chainsaw/branch-deletion');
 });
