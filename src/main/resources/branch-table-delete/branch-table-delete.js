@@ -20,13 +20,11 @@
 define('michielroos/bitbucket/chainsaw/branch-table-delete', [
         '@atlassian/aui',
         'jquery',
-        'lodash',
-        'michielroos/bitbucket/chainsaw/branch-deletion'
+        'lodash'
     ],
 function(AJS,
          $,
-         _,
-         branchDeletion) {
+         _) {
 
         var branchListTable = '#branch-list';
 
@@ -105,9 +103,41 @@ function(AJS,
                 });
                 e.preventDefault();
             });
+
+        $.fn.shiftClick = function () {
+            var lastSelected;
+            var checkBoxes = $(this);
+            this.each(function () {
+                $(this).click(function (ev) {
+                    if (ev.shiftKey) {
+                        if (!lastSelected) {
+                          return false;
+                        }
+                        var last = checkBoxes.index(lastSelected);
+                        var first = checkBoxes.index(this);
+                        var start = Math.min(first, last);
+                        var end = Math.max(first, last);
+                        var check = lastSelected.checked;
+                        for (var i = start; i <= end; i++) {
+                          checkBoxes[i].checked = check;
+                        }
+                    } else {
+                        lastSelected = this;
+                    }
+                })
+            });
+        };
+
+        // due to the lazy loading of branches, register this after each branch rest call
+        $(document).ajaxComplete(function(event, xhr, settings) {
+            if (settings.url.indexOf("branches") !== -1) {
+                $('input.branch-list-delete').shiftClick();
+            }
+        });
+
+
     });
 
 AJS.$(document).ready(function() {
-  require('michielroos/bitbucket/chainsaw/branch-table-delete');
+    require('michielroos/bitbucket/chainsaw/branch-table-delete');
 });
-
