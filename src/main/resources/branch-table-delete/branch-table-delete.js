@@ -17,103 +17,97 @@
 /*global bitbucket, define, require, com, require */
 'use strict';
 
-define('michielroos/bitbucket/chainsaw/branch-table-delete',
-    [
+define('michielroos/bitbucket/chainsaw/branch-table-delete', [
+        '@atlassian/aui',
         'jquery',
         'lodash',
-        'bitbucket/internal/util/dom-event',
-        'michielroos/bitbucket/chainsaw/branch-deletion',
-        'exports'],
-    function($,
-             _,
-             domEventUtil,
-             branchDeletion,
-             exports) {
+        'michielroos/bitbucket/chainsaw/branch-deletion'
+    ],
+function(AJS,
+         $,
+         _,
+         branchDeletion) {
 
         var branchListTable = '#branch-list';
 
-        exports.onReady = function() {
-            // Remove checkbox from base branch
-            // $(branchListTable).find('tr.base-branch .checkbox .branch-list-delete').remove();
+        var $container = $('.aui-toolbar2-secondary.commit-badge-container');
+        $container.append(' <div class="aui-buttons">' +
+            '   <button class="aui-button aui-button-split-main" id="delete-checked-branches"><span class="aui-icon aui-icon-small aui-iconfont-delete">Delete </span> Delete checked branches</button>' +
+            '   <button class="aui-button aui-dropdown2-trigger aui-button-split-more" aria-haspopup="true" aria-owns="split-container-delete-checked-branches">Options</button></div>' +
+            '   <div id="split-container-delete-checked-branches"' +
+            '       class="aui-dropdown2 aui-style-default aui-layer aui-alignment-element aui-alignment-side-bottom aui-alignment-snap-right aui-alignment-out-of-bounds' +
+            '           aui-alignment-out-of-bounds-bottom aui-alignment-out-of-bounds-left aui-alignment-element-attached-top aui-alignment-element-attached-right' +
+            '           aui-alignment-target-attached-bottom aui-alignment-target-attached-right"' +
+            '       role="menu" aria-hidden="true" resolved="" data-aui-alignment-container="#delete-checked-branches" data-aui-alignment="bottom auto" data-aui-alignment-static="true">' +
+            '	<div class="aui-dropdown2-section" id="delete-checked-branches-options">' +
+            '	    <div class="aui-dropdown2-heading">' +
+            '   	    <strong>Select</strong>' +
+            '   	</div>' +
+            '   	<ul class="aui-list-truncate">' +
+            '	    	<li><a class="check-all" href="#" tabindex="-1">All</a></li>' +
+            '		    <li><a class="toggle" href="#" tabindex="-1">Toggle selection</a></li>' +
+            '   		<li><a class="check-all-merged" href="#" tabindex="-1">Merged branches</a></li>' +
+            '	    	<li><a class="check-all-merged-6m" href="#" tabindex="-1">Merged branches older than 6 months</a></li>' +
+            '	    	<li><a class="check-all-merged-12m" href="#" tabindex="-1">Merged branches older than 1 year</a></li>' +
+            '	    </ul>' +
+            '   </div></div></div>' +
+            '');
 
-            var $container = $('.aui-toolbar2-secondary.commit-badge-container');
-            $container.append(' <div class="aui-buttons">' +
-                '   <button class="aui-button aui-button-split-main" id="delete-checked-branches"><span class="aui-icon aui-icon-small aui-iconfont-delete">Delete </span> Delete checked branches</button>' +
-                '   <button class="aui-button aui-dropdown2-trigger aui-button-split-more" aria-haspopup="true" aria-owns="split-container-delete-checked-branches">Options</button></div>' +
-                '   <div id="split-container-delete-checked-branches"' +
-                '       class="aui-dropdown2 aui-style-default aui-layer aui-alignment-element aui-alignment-side-bottom aui-alignment-snap-right aui-alignment-out-of-bounds' +
-                '           aui-alignment-out-of-bounds-bottom aui-alignment-out-of-bounds-left aui-alignment-element-attached-top aui-alignment-element-attached-right' +
-                '           aui-alignment-target-attached-bottom aui-alignment-target-attached-right"' +
-                '       role="menu" aria-hidden="true" resolved="" data-aui-alignment-container="#delete-checked-branches" data-aui-alignment="bottom auto" data-aui-alignment-static="true">' +
-                '	<div class="aui-dropdown2-section" id="delete-checked-branches-options">' +
-                '	    <div class="aui-dropdown2-heading">' +
-                '   	    <strong>Select</strong>' +
-                '   	</div>' +
-                '   	<ul class="aui-list-truncate">' +
-                '	    	<li><a class="check-all" href="#" tabindex="-1">All</a></li>' +
-                '		    <li><a class="toggle" href="#" tabindex="-1">Toggle selection</a></li>' +
-                '   		<li><a class="check-all-merged" href="#" tabindex="-1">Merged branches</a></li>' +
-                '	    	<li><a class="check-all-merged-6m" href="#" tabindex="-1">Merged branches older than 6 months</a></li>' +
-                '	    	<li><a class="check-all-merged-12m" href="#" tabindex="-1">Merged branches older than 1 year</a></li>' +
-                '	    </ul>' +
-                '   </div></div></div>' +
-                '');
-
-            $('#delete-checked-branches-options .toggle')
-                .on('click', function(e) {
-                    var checkBoxes = $(branchListTable).find('input[type=checkbox]');
-                    _.forEach(checkBoxes, function(checkbox) {
-                        $(checkbox).prop('checked', !$(checkbox).prop('checked'));
-                    });
+        $('#delete-checked-branches-options .toggle')
+            .on('click', function(e) {
+                var checkBoxes = $(branchListTable).find('input[type=checkbox]');
+                _.forEach(checkBoxes, function(checkbox) {
+                    $(checkbox).prop('checked', !$(checkbox).prop('checked'));
                 });
+            });
 
-            $('#delete-checked-branches-options .check-all')
-                .on('click', function(e) {
-                    var checkBoxes = $(branchListTable).find('input[type=checkbox]');
-                    checkBoxes.prop('checked', 'checked');
-                    e.preventDefault();
-                });
+        $('#delete-checked-branches-options .check-all')
+            .on('click', function(e) {
+                var checkBoxes = $(branchListTable).find('input[type=checkbox]');
+                checkBoxes.prop('checked', 'checked');
+                e.preventDefault();
+            });
 
-            $('#delete-checked-branches-options .check-all-merged')
-                .on('click', function(e) {
-                    var checkBoxes = $(branchListTable).find('td .merged').closest('tr').find('input[type=checkbox]');
-                    $(branchListTable).find('input[type=checkbox]').prop('checked', false);
-                    checkBoxes.prop('checked', 'checked');
-                    e.preventDefault();
-                });
+        $('#delete-checked-branches-options .check-all-merged')
+            .on('click', function(e) {
+                var checkBoxes = $(branchListTable).find('td .merged').closest('tr').find('input[type=checkbox]');
+                $(branchListTable).find('input[type=checkbox]').prop('checked', false);
+                checkBoxes.prop('checked', 'checked');
+                e.preventDefault();
+            });
 
-            $('#delete-checked-branches-options .check-all-merged-6m')
-                .on('click', function(e) {
-                    var checkBoxes = $(branchListTable).find('td .merged').closest('tr').find('input[type=checkbox]'),
-                        lastModification,
-                        now = new Date() / 1000 | 0;
-                    $(branchListTable).find('input[type=checkbox]').prop('checked', false);
-                    _.forEach(checkBoxes, function(checkbox) {
-                        lastModification = new Date($(checkbox).closest('tr').find('td.last-updated-column time').prop('datetime')) / 1000 | 0;
-                        if (((now - lastModification) / 3600 / 24) > 182) {
-                            $(checkbox).prop('checked', 'checked');
-                        }
-                    });
-                    e.preventDefault();
+        $('#delete-checked-branches-options .check-all-merged-6m')
+            .on('click', function(e) {
+                var checkBoxes = $(branchListTable).find('td .merged').closest('tr').find('input[type=checkbox]'),
+                    lastModification,
+                    now = new Date() / 1000 | 0;
+                $(branchListTable).find('input[type=checkbox]').prop('checked', false);
+                _.forEach(checkBoxes, function(checkbox) {
+                    lastModification = new Date($(checkbox).closest('tr').find('td.last-updated-column time').prop('datetime')) / 1000 | 0;
+                    if (((now - lastModification) / 3600 / 24) > 182) {
+                        $(checkbox).prop('checked', 'checked');
+                    }
                 });
+                e.preventDefault();
+            });
 
-            $('#delete-checked-branches-options .check-all-merged-12m')
-                .on('click', function(e) {
-                    var checkBoxes = $(branchListTable).find('td .merged').closest('tr').find('input[type=checkbox]'),
-                        lastModification,
-                        now = new Date() / 1000 | 0;
-                    $(branchListTable).find('input[type=checkbox]').prop('checked', false);
-                    _.forEach(checkBoxes, function(checkbox) {
-                        lastModification = new Date($(checkbox).closest('tr').find('td.last-updated-column time').prop('datetime')) / 1000 | 0;
-                        if (((now - lastModification) / 3600 / 24) >= 365) {
-                            $(checkbox).prop('checked', 'checked');
-                        }
-                    });
-                    e.preventDefault();
+        $('#delete-checked-branches-options .check-all-merged-12m')
+            .on('click', function(e) {
+                var checkBoxes = $(branchListTable).find('td .merged').closest('tr').find('input[type=checkbox]'),
+                    lastModification,
+                    now = new Date() / 1000 | 0;
+                $(branchListTable).find('input[type=checkbox]').prop('checked', false);
+                _.forEach(checkBoxes, function(checkbox) {
+                    lastModification = new Date($(checkbox).closest('tr').find('td.last-updated-column time').prop('datetime')) / 1000 | 0;
+                    if (((now - lastModification) / 3600 / 24) >= 365) {
+                        $(checkbox).prop('checked', 'checked');
+                    }
                 });
-        };
+                e.preventDefault();
+            });
     });
 
-jQuery(document).ready(function() {
-    require('michielroos/bitbucket/chainsaw/branch-table-delete').onReady();
+AJS.$(document).ready(function() {
+  require('michielroos/bitbucket/chainsaw/branch-table-delete');
 });
+

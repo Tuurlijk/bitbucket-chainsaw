@@ -16,12 +16,20 @@
 
 	<client-resource key="branch-deletion-resources" name="Branch Deletion Resources">
 		<directory location="/branch-deletion/"/>
-		<dependency>com.atlassian.bitbucket.server.bitbucket-web:global</dependency>
+		<dependency>com.atlassian.auiplugin:ajs</dependency>
+		<dependency>com.atlassian.bitbucket.server.bitbucket-web-api:amd</dependency>
+		<dependency>com.atlassian.bitbucket.server.bitbucket-web-api:aui</dependency>
+		<dependency>com.atlassian.bitbucket.server.bitbucket-web-api:jquery</dependency>
+		<dependency>com.atlassian.bitbucket.server.bitbucket-web-api:navbuilder</dependency>
+		<dependency>com.atlassian.bitbucket.server.bitbucket-web-api:server</dependency>
 	</client-resource>
 
 	<client-resource key="branch-table-delete-resources" name="Branch Table Delete Column Resources">
 		<directory location="/branch-table-delete/"/>
-		<dependency>com.atlassian.bitbucket.server.bitbucket-web:global</dependency>
+		<dependency>com.atlassian.auiplugin:ajs</dependency>
+		<dependency>com.atlassian.bitbucket.server.bitbucket-web-api:amd</dependency>
+		<dependency>com.atlassian.bitbucket.server.bitbucket-web-api:aui</dependency>
+		<dependency>com.atlassian.bitbucket.server.bitbucket-web-api:jquery</dependency>
 	</client-resource>
 
 	<client-web-section key="delete-column" name="Delete column" weight="250" location="bitbucket.branches.extras">
